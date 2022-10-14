@@ -51,7 +51,6 @@ export default {
 <style lang="scss">
 .table_wrapper {
   display: flex;
-  margin: 0 auto;
   justify-content: center;
 }
 .main-table {
