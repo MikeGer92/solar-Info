@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home__main">
       <div class="home__main_manage">
-        <h3 class="home__main_manage-title"></h3>
+        <h2 class="home__main_manage-title">Search, filters, sorting</h2>
         <!-- <MySelect
 				v-model="selectedSort"
 				:options="sortOptions"
@@ -12,7 +12,7 @@
 			<MyInput 
 				v-model="searchQuery"
 				:style="{'margin-right': '15px', 'max-width': '300px'}"
-				placeholder="Поиск по названию"
+				placeholder="Поиск по названию(Английский язык)"
 			>
 			</MyInput>
       </div>
@@ -153,6 +153,10 @@ export default {
       max-width: 400px;
       display: flex;
       flex-direction: column;
+      &-title {
+        font-size: 24px;
+        padding: 10px 0;
+      }
     }
   }
   &__paginate {
