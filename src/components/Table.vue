@@ -2,7 +2,7 @@
   <div class="table_wrapper">
     <table class="main-table">
       <caption>
-        <h2>Info About Objects in Solar System</h2>
+        <h2>Информация об объектах Солнечной системы</h2>
       </caption>
       <tr>
         <th
@@ -37,7 +37,7 @@ export default {
   components: { RowItem },
   data() {
     return {
-      columns: ['Date(Discovered)', 'Name', 'Quantity(Radius), km', 'Distance, km'],
+      columns: ['Дата(открытия)', 'Имя', 'Количество(радиус), км', 'Расстояние(до планеты), км'],
       start: 0,
       limit: 10
     }

@@ -2,19 +2,26 @@
   <div class="home">
     <div class="home__main">
       <div class="home__main_manage">
-        <h2 class="home__main_manage-title">Search, filters, sorting</h2>
-        <!-- <MySelect
-				v-model="selectedSort"
-				:options="sortOptions"
-				:style="{'margin-right': '15px'}"
-			>
-			</MySelect> -->
+        <h2 class="home__main_manage-title">Поиск, сортировка, фильтрация</h2>
 			<MyInput 
 				v-model="searchQuery"
-				:style="{'margin-right': '15px', 'max-width': '300px'}"
+				:style="{'margin-right': '0px', 'max-width': '300px'}"
 				placeholder="Поиск по названию(Английский язык)"
 			>
 			</MyInput>
+      <button
+        class="home__main_manage-button"
+        @click="changeDirect"
+      >
+        Сортировка {{ direct }}
+      </button>
+      <MySelect
+        v-model="selectedSort"
+				:modelValue="selectedSort"
+				:options="sortOptions"
+        @change="changeSelect"
+			>
+			</MySelect>
       </div>
       <InfoTable 
         :bodyList="searchObject"
@@ -51,15 +58,13 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import { mapActions, mapGetters } from 'vuex'
 import InfoTable from '@/components/Table.vue'
 import MyInput from '@/components/UI/MyInput.vue'
-// import MySelect from '@/components/UI/MySelect.vue'
-// import  axios  from 'axios'
+import MySelect from '@/components/UI/MySelect.vue'
 export default {
   name: 'HomePage',
-  components: { InfoTable, MyInput },
+  components: { InfoTable, MyInput, MySelect },
   data() {
     return {
       objects: [],
@@ -70,20 +75,37 @@ export default {
       },
       selectedSort: '',
 			sortOptions: [
-				{value: 'id', name: 'По номеру'},
-				{value: 'title', name: 'По названию'},
-				{value: 'body', name: 'По описанию'},
-				{value: 'date', name: 'По дате'}
-			],
+				{value: 'englishName', name: 'По имени'},
+				{value: 'meanRadius', name: 'По количеству'},
+				{value: 'semimajorAxis', name: 'По расстоянию'}
+      ],
+      sortDirection: true,
+      direct: 'от А до Я',
 			searchQuery: '',
-
-      // totalPages: 24,
       startPage: 1
     }
   },
-  watch: {
-
-  },
+	watch: { 
+    selectedSort(newValue) {
+      console.log(newValue)
+      console.log(this.sortDirection)
+			this.getBodies.sort((obj1, obj2) => {
+        if (newValue === 'englishName') {
+          if (this.sortDirection) {
+            return obj1[newValue].localeCompare(obj2[newValue])
+          } else {
+            return obj2[newValue].localeCompare(obj1[newValue])
+          }
+        } else {
+          if (this.sortDirection) {
+            return obj1[newValue] - obj2[newValue]
+          } else {
+            return obj2[newValue] - obj1[newValue]
+          }
+				}
+			})
+		}
+	},
   computed: {
     ...mapGetters(['BODIES']),
     getBodies() {
@@ -105,10 +127,13 @@ export default {
     },
     searchObject() {
 			return this.getBodies.filter(obj => obj.englishName.toLowerCase().includes(this.searchQuery.toLowerCase()))
-		}
+    },
+  },
+  beforeMount() {
+    this.GET_BODIES()
   },
   mounted() {
-    this.GET_BODIES()
+    console.log([...this.BODIES])
   },
   methods: {
     ...mapActions(['GET_BODIES']),
@@ -134,6 +159,19 @@ export default {
       } else {
         this.page = 1
       }
+    },
+    changeSelect() {
+      console.log(this.selectedSort)
+    },
+    changeDirect() {
+      this.sortDirection = !this.sortDirection
+      // eslint-disable-next-line no-constant-condition
+      if (!this.sortDirection) {
+        this.direct = 'от Я до А'
+      } else {
+        this.direct = 'от А до Я'
+      }
+      this.selectedSort = ''
     }
   },
 }
@@ -153,9 +191,26 @@ export default {
       max-width: 400px;
       display: flex;
       flex-direction: column;
+      align-items: center;
       &-title {
-        font-size: 24px;
+        font-size: 36px;
         padding: 10px 0;
+      }
+      &-button {
+        margin-top: 37px;
+        width: 332px;
+        height: 37px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #8e7bea;
+        border: 2px solid #8e7bea;
+        font-size: 20px;
+        color: #FFF;
+        &:hover {
+          background: #FFF;
+          color: #8e7bea;
+        }
       }
     }
   }

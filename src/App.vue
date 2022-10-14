@@ -1,7 +1,7 @@
 <template>
   <div class="main-block">
     <div class="main-block__title">
-      <h1>Solar System Info</h1>
+      <h1>Объекты Солнечной системы</h1>
     </div>
   </div>
   <router-view/>

@@ -1,8 +1,9 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <div>
     <select 
       class="select"
-      v-model="localModelValue"
+      v-model="modelValue"
       @change="changeOption"
     >
       <option disabled value="">Выберите из списка</option>
@@ -28,26 +29,21 @@ export default {
       default: () => []
     }
   },
-  computed: {
-    localModelValue: {
-      get() {
-        return this.modelValue
-      },
-    },
-    methods: {
-      changeOption(event) {
-        this.$emit('update:modelValue', event.target.value)
-      }
+  methods: {
+    changeOption(event) {
+      this.$emit('update:modelValue', event.target.value)
     }
-
   }
 }
 </script>
 
 <style lang="scss">
 .select {
+  margin-top: 17px;
+  width: 332px;
   border: 1px solid #8e7bea;
   height: 37px;
+  padding: 10px 15px; 
 }
 
 </style>
