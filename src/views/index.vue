@@ -183,7 +183,6 @@ export default {
     },
     searchObject() {
       if (this.searchQuery) {
-        console.log(this.searchQuery)
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.objects = this.getBodies.filter(obj => obj.englishName.toLowerCase().includes(this.searchQuery.toLowerCase()))
       } else {
@@ -247,7 +246,6 @@ export default {
     },
     getFiltered(val, typeVal) {
       if (typeVal === 'gt') {
-        console.log(val)
         this.objects = this.getBodies.filter(body => body[val] > this.filterQuery)
       } else {
         if (typeVal === 'lt') {
