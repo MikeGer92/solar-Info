@@ -3,14 +3,20 @@
     :value="modelValue"
     @input="updateInput" 
     type="text" 
-    class="input"/>
+    class="input"
+    :disabled="disabledInput"
+  />
 </template>
 
 <script>
 export default {
   name: 'MyInput',
   props: {
-    modelValue: [String, Number]
+    modelValue: [String, Number],
+  disabledInput: {
+      type: Boolean,
+      default: false
+    }
 
   },
   methods: {
@@ -25,7 +31,13 @@ export default {
 <style lang="scss">
 .input {
 	width: 100%;
-	padding: 10px 15px;
-	border: 1px solid #8e7bea;
+	padding: 8px 14px;
+	border: 2px solid #8e7bea;
+  border-radius: 10px;
+  color: #8e7bea;
+  font-size: 16px;
+  &:focus {
+    border: 2px solid #8e7bea;
+  }
 }
 </style>

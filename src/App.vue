@@ -22,10 +22,10 @@
 .main-block {
   width: 100%;
   max-width: 1920px;
-  background: url('@/assets/images/solar2.jpg') 0px -290px/cover no-repeat;
+  background: url('@/assets/images/solar2.jpg') 0px -340px/cover no-repeat;
   &__title {
-    padding: 20px 150px 280px 0px;
-    font-size: 42px;
+    padding: 0px 150px 250px 150px;
+    font-size: 36px;
     text-shadow: #cad5e2 1px 1px 0, #cad5e2 2px 2px 0, 
                  #cad5e2 3px 3px 0, #cad5e2 4px 4px 0, 
                  #cad5e2 5px 5px 0;
