@@ -2,7 +2,7 @@
   <div class="table_wrapper">
     <table class="main-table">
       <caption>
-        <h2>Информация об объектах Солнечной системы</h2>
+        <h3>Информация об объектах Солнечной системы</h3>
       </caption>
       <tr>
         <th
@@ -82,14 +82,18 @@ export default {
       box-shadow: inset -1px 1px 0 #999999, inset 0 -1px 0 #999999;
     }
   }
-  & tr:nth-child(odd) {
-    background: #ebf3f9;
+  & tr {
+    height: 35px;
+    &:nth-child(odd) {
+      background: #ebf3f9;
+    }
   }
   & td {
     border: 1px solid #e3eef7;
-    padding: 7px 15px;
+    padding: 0px 15px;
     position: relative; 
-    font-size: 20px;
+    font-size: 18px;
+    height: 40px;
   }
 }
 </style>

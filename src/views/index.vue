@@ -2,26 +2,59 @@
   <div class="home">
     <div class="home__main">
       <div class="home__main_manage">
-        <h2 class="home__main_manage-title">Поиск, сортировка, фильтрация</h2>
-			<MyInput 
-				v-model="searchQuery"
-				:style="{'margin-right': '0px', 'max-width': '300px'}"
-				placeholder="Поиск по названию(Английский язык)"
-			>
-			</MyInput>
-      <button
-        class="home__main_manage-button"
-        @click="changeDirect"
-      >
-        Сортировка {{ direct }}
-      </button>
-      <MySelect
-        v-model="selectedSort"
-				:modelValue="selectedSort"
-				:options="sortOptions"
-        @change="changeSelect"
-			>
-			</MySelect>
+        <h3 class="home__main_manage-title">Поиск, сортировка, фильтрация</h3>
+        <h3 class="home__main_manage-subtitle">Поис по имени</h3>
+        <MyInput 
+          v-model="searchQuery"
+          :style="{'margin-top': '15px', 'max-width': '300px'}"
+          placeholder="Поиск по названию(Английский язык)"
+        >
+        </MyInput>
+        <h3 class="home__main_manage-subtitle">Сортировка</h3>
+        <button
+          class="home__main_manage-button"
+          @click="changeDirect"
+        >
+          Сортировка {{ direct }}
+        </button>
+        <MySelect
+          :defValue="defSortValue"
+          v-model="selectedSort"
+          :modelValue="selectedSort"
+          :options="sortOptions"
+          @mousemove="changeSelectSort"
+        >
+        </MySelect>
+        <h3 class="home__main_manage-subtitle">Фильтрация</h3>
+        <MySelect
+          :defValue="defFiltValue"
+          v-model="selectFilter"
+          :modelValue="selectFilter"
+          :options="filterOptions" 
+        >
+        </MySelect>
+        <MySelect
+          :defValue="defFiltType"
+          v-model="typeFilter"
+          :modelValue="selectType"
+          :options="typeOptions"
+          :disabledSelect="!selectFilter"
+        >
+        </MySelect>
+        <MyInput 
+          placeholder="Введите значение для фильтации"
+          :disable="true"
+          v-model="filterQuery"
+          :style="{'margin-top': '15px', 'max-width': '300px'}"
+          :disabledInput="!typeFilter"
+        >
+        </MyInput>
+        <button
+          class="home__main_manage-button"
+          @click="clearSelect"
+        >
+          Сброс сотрировки
+        </button>
       </div>
       <InfoTable 
         :bodyList="searchObject"
@@ -45,9 +78,9 @@
       @click="changePage(pageNum)"
     >
       {{ pageNum }}</div>
-      <div class="home__paginate_page_hide" v-if="page<16">...</div>
+      <div class="home__paginate_page_hide" v-if="page<(Math.ceil(totalPages*0.6)+1)">...</div>
       <div class="home__paginate_page"
-        v-if="page<17"
+        v-if="page<(totalPages - totalPages*0.6)"
         :class="{'paginate__page': true, 'home__paginate_page_active': page === totalPages }"
         @click="changePage(totalPages)"
       >
@@ -72,23 +105,40 @@ export default {
       listParams: {
         limit: 10,
         startPos: 0,
+        disabled: 1,
       },
       selectedSort: '',
+      selectFilter: '',
+      selectedFilter: false,
+      typeFilter: '',
+      addFilter: '',
 			sortOptions: [
 				{value: 'englishName', name: 'По имени'},
 				{value: 'meanRadius', name: 'По количеству'},
 				{value: 'semimajorAxis', name: 'По расстоянию'}
       ],
+      filterOptions: [
+				{value: 'meanRadius', name: 'По количеству'},
+				{value: 'semimajorAxis', name: 'По расстоянию'}
+      ],
+      typeOptions: [
+				{value: 'inc', name: 'Содержит'},
+				{value: 'eq', name: 'Равно'},
+				{value: 'gt', name: 'Больше чем'},
+				{value: 'lt', name: 'Меньше чем'}
+      ],
       sortDirection: true,
       direct: 'от А до Я',
-			searchQuery: '',
+      searchQuery: '',
+      defSortValue: 'Выберите значение для сортировки',
+      defFiltValue: 'Выберите значение для фильтрации',
+      defFiltType: 'Выберите тип фильтрации',
+      filterQuery: '',
       startPage: 1
     }
   },
 	watch: { 
     selectedSort(newValue) {
-      console.log(newValue)
-      console.log(this.sortDirection)
 			this.getBodies.sort((obj1, obj2) => {
         if (newValue === 'englishName') {
           if (this.sortDirection) {
@@ -104,21 +154,27 @@ export default {
           }
 				}
 			})
-		}
+    },
+    addFilter(newFil) {
+      if (newFil === 'isPlanet') {
+        this.objects = this.getBodies.filter(body => body[newFil])
+      } else {
+        this.objects = this.getBodies.filter(body => body[newFil] === false)
+      }
+    }
 	},
   computed: {
     ...mapGetters(['BODIES']),
     getBodies() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      return this.objects = this.BODIES
+      return this.objects =  this.BODIES
     },
-    // eslint-disable-next-line vue/return-in-computed-property
     totalPages() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-     return  this.totalPages = Math.ceil(this.getBodies.length / this.listParams.limit)
+     return  this.totalPages = Math.ceil(this.searchObject.length / this.listParams.limit)
     },
     pages() {
-      let numShown = 15;   // This sets the number of page tabs
+      let numShown = Math.ceil(this.totalPages*0.6);   // This sets the number of page tabs
       numShown = Math.min(numShown, this.totalPages);
       let first = this.page - Math.floor(numShown / 2);
       first = Math.max(first, 1);
@@ -126,23 +182,33 @@ export default {
       return [...Array(numShown)].map((k,i) => i + first);
     },
     searchObject() {
-			return this.getBodies.filter(obj => obj.englishName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      if (this.searchQuery) {
+        console.log(this.searchQuery)
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.objects = this.getBodies.filter(obj => obj.englishName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      } else {
+        if (this.filterQuery) {
+          this.getFiltered(this.selectFilter, this.typeFilter)
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        } else {
+            // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+            this.objects = this.getBodies
+          
+        }
+      }
+      return this.objects
     },
   },
   beforeMount() {
     this.GET_BODIES()
   },
   mounted() {
-    console.log([...this.BODIES])
   },
   methods: {
     ...mapActions(['GET_BODIES']),
     changePage(num) {
       this.page = num
       this.listParams.startPos = this.listParams.limit * (num-1)
-      console.log(num)
-      console.log(this.listParams.limit)
-      console.log(this.listParams.startPos)
     },
     maxPageUp() {
       if (this.page < this.totalPages ) {
@@ -160,8 +226,14 @@ export default {
         this.page = 1
       }
     },
-    changeSelect() {
-      console.log(this.selectedSort)
+    changeSelectSort() {
+      this.selectedSort = ''
+    },
+    clearSelect() {
+      this.selectFilter = ''
+      this.typeFilter = ''
+      this.filterQuery = null
+      this.searchObject
     },
     changeDirect() {
       this.sortDirection = !this.sortDirection
@@ -172,6 +244,29 @@ export default {
         this.direct = 'от А до Я'
       }
       this.selectedSort = ''
+    },
+    getFiltered(val, typeVal) {
+      if (typeVal === 'gt') {
+        console.log(val)
+        this.objects = this.getBodies.filter(body => body[val] > this.filterQuery)
+      } else {
+        if (typeVal === 'lt') {
+          this.objects = this.getBodies.filter(body => body[val] < this.filterQuery)
+        } else {
+          if (typeVal === 'eq') {
+            this.objects = this.getBodies.filter(body => body[val] == String(this.filterQuery))
+          } else {
+            this.objects = this.getBodies.filter(body => String(body[val]).toLowerCase().includes(this.filterQuery.toLowerCase()))
+          }
+        }
+      }
+    },
+    validate() {
+      if (!this.selectFilter || !this.typeFilter) {
+        alert('Выберите параметры фильтрации')
+        this.filterQuery = null
+        this.clearSelect()
+      }
     }
   },
 }
@@ -188,16 +283,19 @@ export default {
     justify-content: space-around;
     &_manage {
       width: 100%;
-      max-width: 400px;
+      max-width: 450px;
       display: flex;
       flex-direction: column;
       align-items: center;
       &-title {
-        font-size: 36px;
-        padding: 10px 0;
+        font-size: 28px;
+        padding: 10px 0 0 0;
+      }
+      &-subtitle {
+        margin-top: 30px;
       }
       &-button {
-        margin-top: 37px;
+        margin-top: 15px;
         width: 332px;
         height: 37px;
         display: flex;
@@ -207,15 +305,25 @@ export default {
         border: 2px solid #8e7bea;
         font-size: 20px;
         color: #FFF;
+        border-radius: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        transition: all 0.2s;
+        box-shadow: 0 0 40px 40px #8e7bea inset, 0 0 0 0 #8e7bea;
+        cursor:pointer;
         &:hover {
           background: #FFF;
           color: #8e7bea;
+          box-shadow: 0 0 10px 0 #8e7bea inset, 0 0 10px 4px #8e7bea;
+        }
+        &:active{
+          transform: scaleX(0.9) translateY(4px);
         }
       }
     }
   }
   &__paginate {
-    margin: 20px 0;
+    margin: 10px 0 10px 33%;
     display: flex;
     flex-direction: row;
     font-size: 18px;

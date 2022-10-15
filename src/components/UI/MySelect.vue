@@ -5,8 +5,9 @@
       class="select"
       v-model="modelValue"
       @change="changeOption"
+      :disabled="disabledSelect"
     >
-      <option disabled value="">Выберите из списка</option>
+      <option disabled value="">{{ defValue }}</option>
       <option 
         v-for="option in options" 
         :key="option.value" 
@@ -27,6 +28,14 @@ export default {
     options: {
       type: Array,
       default: () => []
+    },
+    defValue: {
+      type: String,
+      default: ''
+    },
+    disabledSelect: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -39,11 +48,14 @@ export default {
 
 <style lang="scss">
 .select {
-  margin-top: 17px;
+  margin-top: 15px;
   width: 332px;
-  border: 1px solid #8e7bea;
+  border: 2px solid #8e7bea;
+  border-radius: 10px;
   height: 37px;
-  padding: 10px 15px; 
+  padding: 5px 15px; 
+  color: #8e7bea;
+  font-size: 16px;
 }
 
 </style>
