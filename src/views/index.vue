@@ -65,12 +65,12 @@
     <div class="home__paginate">
       <div class="home__paginate_prev" @click="maxPageDown">&lt;</div>
       <div class="home__paginate_page"
-        v-if="page>8"
+        v-if="page>Math.ceil(totalPages/4)+1"
         :class="{'home__paginate_page': true, 'home__paginate_page_active': page === this.startPage }"
         @click="changePage(startPage)"
       >
         {{ startPage }}</div>
-      <div class="home__paginate_page_hide" v-if="page>9">...</div>
+      <div class="home__paginate_page_hide" v-if="page>Math.ceil(totalPages/4)+1">...</div>
       <div class="home__paginate_page"
       v-for="pageNum in pages"
       :key="pageNum"
@@ -78,9 +78,9 @@
       @click="changePage(pageNum)"
     >
       {{ pageNum }}</div>
-      <div class="home__paginate_page_hide" v-if="page<(Math.ceil(totalPages*0.6)+1)">...</div>
+      <div class="home__paginate_page_hide" v-if="page<Math.ceil(totalPages - totalPages/4)-1">...</div>
       <div class="home__paginate_page"
-        v-if="page<(totalPages - totalPages*0.6)"
+        v-if="page<Math.ceil(totalPages - totalPages/4)"
         :class="{'paginate__page': true, 'home__paginate_page_active': page === totalPages }"
         @click="changePage(totalPages)"
       >
@@ -92,7 +92,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import InfoTable from '@/components/Table.vue'
+import InfoTable from '@/components/table/Table.vue'
 import MyInput from '@/components/UI/MyInput.vue'
 import MySelect from '@/components/UI/MySelect.vue'
 export default {
@@ -174,7 +174,7 @@ export default {
      return  this.totalPages = Math.ceil(this.searchObject.length / this.listParams.limit)
     },
     pages() {
-      let numShown = Math.ceil(this.totalPages*0.6);   // This sets the number of page tabs
+      let numShown = Math.ceil((this.totalPages / 2)+1);   // This sets the number of page tabs
       numShown = Math.min(numShown, this.totalPages);
       let first = this.page - Math.floor(numShown / 2);
       first = Math.max(first, 1);
