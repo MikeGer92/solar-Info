@@ -11,12 +11,10 @@
         >
         </MyInput>
         <h3 class="home__main_manage-subtitle">Сортировка</h3>
-        <button
-          class="home__main_manage-button"
-          @click="changeDirect"
-        >
-          Сортировка {{ direct }}
-        </button>
+        <MyButton
+          :title="`Сортировка${direct}`"
+          @anyFunc="changeDirect"
+        ></MyButton>
         <MySelect
           :defValue="defSortValue"
           v-model="selectedSort"
@@ -49,12 +47,10 @@
           :disabledInput="!typeFilter"
         >
         </MyInput>
-        <button
-          class="home__main_manage-button"
-          @click="clearSelect"
-        >
-          Сброс сотрировки
-        </button>
+        <MyButton
+          title="Сброс сотрировки"
+          @anyFunc="clearSelect"
+        ></MyButton>
       </div>
       <InfoTable 
         :bodyList="searchObject"
@@ -80,7 +76,7 @@
       {{ pageNum }}</div>
       <div class="home__paginate_page_hide" v-if="page<Math.ceil(totalPages - totalPages/4)-1">...</div>
       <div class="home__paginate_page"
-        v-if="page<Math.ceil(totalPages - totalPages/4)"
+        v-if="page<Math.ceil(totalPages - totalPages/4) && totalPages>2"
         :class="{'paginate__page': true, 'home__paginate_page_active': page === totalPages }"
         @click="changePage(totalPages)"
       >
@@ -95,9 +91,11 @@ import { mapActions, mapGetters } from 'vuex'
 import InfoTable from '@/components/table/Table.vue'
 import MyInput from '@/components/UI/MyInput.vue'
 import MySelect from '@/components/UI/MySelect.vue'
+import MyButton from '@/components/UI/MyButton.vue'
 export default {
   name: 'HomePage',
-  components: { InfoTable, MyInput, MySelect },
+  components: { InfoTable, MyInput, MySelect, MyButton },
+  layouts: 'MainLayout',
   data() {
     return {
       objects: [],
@@ -291,32 +289,6 @@ export default {
       }
       &-subtitle {
         margin-top: 30px;
-      }
-      &-button {
-        margin-top: 15px;
-        width: 332px;
-        height: 37px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #8e7bea;
-        border: 2px solid #8e7bea;
-        font-size: 20px;
-        color: #FFF;
-        border-radius: 10px;
-        padding: 10px;
-        border-radius: 10px;
-        transition: all 0.2s;
-        box-shadow: 0 0 40px 40px #8e7bea inset, 0 0 0 0 #8e7bea;
-        cursor:pointer;
-        &:hover {
-          background: #FFF;
-          color: #8e7bea;
-          box-shadow: 0 0 10px 0 #8e7bea inset, 0 0 10px 4px #8e7bea;
-        }
-        &:active{
-          transform: scaleX(0.9) translateY(4px);
-        }
       }
     }
   }

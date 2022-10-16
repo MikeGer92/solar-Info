@@ -1,11 +1,21 @@
 <template>
-  <div class="main-block">
-    <div class="main-block__title">
-      <h1>Объекты Солнечной системы</h1>
-    </div>
-  </div>
-  <router-view/>
+  <component :is="layout">
+    <router-view/>
+  </component>
 </template>
+
+
+<script>
+import MainLayout from '@/layouts/MainLayout.vue'
+export default {
+  components: { MainLayout },
+  computed: {
+    layout() {
+      return (this.$route.meta.layout || 'main') + '-layout'
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 * {
@@ -18,17 +28,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-.main-block {
-  width: 100%;
-  max-width: 1920px;
-  background: url('@/assets/images/solar2.jpg') 0px -340px/cover no-repeat;
-  &__title {
-    padding: 0px 150px 250px 150px;
-    font-size: 36px;
-    text-shadow: #cad5e2 1px 1px 0, #cad5e2 2px 2px 0, 
-                 #cad5e2 3px 3px 0, #cad5e2 4px 4px 0, 
-                 #cad5e2 5px 5px 0;
-  }
 }
 </style>
