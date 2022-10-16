@@ -37,7 +37,7 @@ export default {
   components: { RowItem },
   data() {
     return {
-      columns: ['Дата(открытия)', 'Имя', 'Количество(радиус), км', 'Расстояние(до планеты), км'],
+      columns: ['Дата (открытия)', 'Имя объекта', 'Кол-во (радиус), км', 'Расстояние (до планеты), км'],
       start: 0,
       limit: 10
     }
@@ -60,7 +60,7 @@ export default {
   text-align: left;
   & caption {
     font-size: 24px;
-    padding: 10px 0;
+    padding: 10px 5px;
   }
   & th {
     border-top: 1px solid #777777;	
@@ -93,6 +93,40 @@ export default {
     position: relative; 
     font-size: 18px;
     height: 40px;
+  }
+}
+@media (min-width: 461px) and (max-width: 900px) {
+  .main-table {
+    width: 98%;
+    & caption {
+      font-size: 18px;
+      text-align: center;
+    }
+    & th {
+      padding: 5px;
+      font-size: 12px;
+      text-align: center;
+    }
+    & td {
+      font-size: 12px;
+    }
+  }
+}
+@media (min-width: 375px) and (max-width: 460px) {
+  .main-table {
+    width: 98%;
+    & caption {
+      font-size: 18px;
+      text-align: center;
+    }
+    & th {
+      padding: 5px;
+      font-size: 12px;
+      text-align: center;
+    }
+    & td {
+      font-size: 12px;
+    }
   }
 }
 </style>

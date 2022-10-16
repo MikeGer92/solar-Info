@@ -172,7 +172,13 @@ export default {
      return  this.totalPages = Math.ceil(this.searchObject.length / this.listParams.limit)
     },
     pages() {
-      let numShown = Math.ceil((this.totalPages / 2)+1);   // This sets the number of page tabs
+      let numShown = 0
+      if (window.innerWidth > 579) {
+        numShown = Math.ceil((this.totalPages / 2) + 1);
+      } else {
+        numShown = Math.ceil((this.totalPages / 3) + 1);
+      }
+      // This sets the number of page tabs
       numShown = Math.min(numShown, this.totalPages);
       let first = this.page - Math.floor(numShown / 2);
       first = Math.max(first, 1);
@@ -275,6 +281,7 @@ export default {
   align-items: center;
   &__main {
     display: flex;
+    flex-wrap: wrap;
     width: 90%;
     justify-content: space-around;
     &_manage {
@@ -323,4 +330,80 @@ export default {
     }
   }
 }
+@media (min-width: 900px) and (max-width: 1500px) {
+  .home {
+    &__paginate {
+      margin: 10px 0 10px 0;
+    }
+  }
+}
+@media (min-width: 581px) and (max-width: 900px) {
+  .home {
+    &__paginate {
+      margin: 10px 0 10px 0;
+      &_page {
+        margin: 0 3px;
+        width: 18px;
+        height: 18px;
+        padding: 3px;
+        font-size: 12px;
+      }
+      &_hide {
+        align-self: flex-end;
+        margin: 0 3px;
+      }
+      &_prev, &_next {
+        align-self: center;
+        font-size: 18px;
+        margin: 0 5px;
+      }
+    }
+  }
+}
+@media (min-width: 375px) and (max-width: 580px) {
+  .home {
+    &__paginate {
+      margin: 10px 0 10px 0;
+      &_page {
+        margin: 0 3px;
+        width: 15px;
+        height: 15px;
+        padding: 2px;
+        font-size: 10px;
+        &_active {
+        border: 1px solid #8e7bea;
+        color: #8e7bea;
+      }
+      }
+      &_prev, &_next {
+        align-self: center;
+        font-size: 16px;
+        margin: 0 5px;
+      }
+    }
+  }
+}
+// @media (min-width: 376px) and (max-width: 460px) {
+//   .home {
+//     &__paginate {
+//       margin: 10px 0 10px 0;
+//       &_page {
+//         margin: 0 2px;
+//         width: 13px;
+//         height: 13px;
+//         padding: 2px;
+//         font-size: 1px;
+//         &_active {
+//         border: 1px solid #8e7bea;
+//         color: #8e7bea;
+//       }
+//       }
+//       &_prev, &_next {
+//         align-self: center;
+//         font-size: 16px;
+//         margin: 0 5px;
+//       }
+//     }
+//   }
+// }
 </style>
